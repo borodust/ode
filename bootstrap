@@ -5,11 +5,20 @@ echo "Please make sure that you use automake 1.11 or later"
 if [ `uname -s` = Darwin ]; then
     echo "On OSX, install latest libtool, as the OS provided glibtoolize will not work"
 fi
- 
+
+case `uname` in
+    Darwin*)
+        BODGE_LIBTOOLIZE=glibtoolize
+        ;;
+    *)
+        BODGE_LIBTOOLIZE=libtoolize
+        ;;
+esac
+
 echo "Running aclocal"
 aclocal -I m4 --install || exit 1
 echo "Running libtoolize"
-libtoolize --copy --automake --install || exit 1
+$BODGE_LIBTOOLIZE --copy --automake --install || exit 1
 echo "Running autoheader"
 autoheader || exit 1
 echo "Running automake"
